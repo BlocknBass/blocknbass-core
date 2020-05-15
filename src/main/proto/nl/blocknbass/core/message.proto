@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package core;
+option java_package = "nl.blocknbass.core.proto";
+option java_outer_classname = "MessageProto";
+import "google/protobuf/any.proto";
+
+message Message {
+	string key = 1;
+	google.protobuf.Any message = 2;
+}
