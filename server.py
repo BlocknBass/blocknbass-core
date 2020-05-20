@@ -6,7 +6,7 @@ import message_pb2
 async def handle_dummy(reader, writer):
     print("Received client")
     protobuf = message_pb2.Message()
-    protobuf.key = "HELLO"
+    protobuf.key = "light"
     writer.write(protobuf.SerializeToString())
     await writer.drain()
     print("Wrote protobuf message")
