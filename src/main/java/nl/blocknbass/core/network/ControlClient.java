@@ -18,6 +18,7 @@ import net.minecraft.util.Formatting;
 import nl.blocknbass.core.proto.MessageProto;
 
 public class ControlClient {
+	/* TODO: we probably want to use minecraft's netty loop instead of our own */
 	private EventLoopGroup nettyGroup = new NioEventLoopGroup();
 	private Channel channel;
 	
@@ -62,8 +63,11 @@ public class ControlClient {
 		return channel;
 	}
 	
-	public void shutdown() {
-		//TODO: fix this lol
-		//nettyGroup.shutdownGracefully();
+	public void shutdownChannels() {
+		try {
+			channel.close().sync();
+		} catch (InterruptedException e) {
+			System.err.println("Channel shutdown failed!");
+		}
 	}
 }

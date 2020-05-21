@@ -25,6 +25,6 @@ public class WorldLoadListener {
 	}
 	
 	public void onDisconnect() {
-		BlocknBassCore.INSTANCE.controlClient.shutdown();
+		BlocknBassCore.INSTANCE.controlClient.shutdownChannels();
 	}
 }

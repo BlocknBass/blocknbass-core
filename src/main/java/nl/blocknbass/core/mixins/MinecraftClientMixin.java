@@ -18,9 +18,4 @@ public class MinecraftClientMixin {
     private void onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci) {
     	WorldLoadListener.get().onLoadWorldPost(worldClientIn, (MinecraftClient)(Object) this);
     }
-    
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
-    private void onDisconnect(@Nullable Screen screen, CallbackInfo ci) {
-    	WorldLoadListener.get().onDisconnect();
-    }
 }
