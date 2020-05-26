@@ -1,8 +1,14 @@
 package nl.blocknbass.core;
 
 import com.google.common.collect.ImmutableList;
+import io.netty.channel.Channel;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Lazy;
 import nl.blocknbass.core.network.ControlClient;
 
@@ -17,7 +23,21 @@ public class BlocknBassCore implements ModInitializer {
 					ENTRYPOINT_TYPE, IBlocknBassMod.class
 			))
 	);
-	
+
+	public static Class<? extends Channel> getNettyLoopClass() {
+		if (Epoll.isAvailable() && MinecraftClient.getInstance().options.shouldUseNativeTransport()) {
+			return EpollSocketChannel.class;
+		}
+		return NioSocketChannel.class;
+	}
+
+	public static Lazy getNettyLoop() {
+		if (Epoll.isAvailable() && MinecraftClient.getInstance().options.shouldUseNativeTransport()) {
+			return ClientConnection.CLIENT_IO_GROUP_EPOLL;
+		}
+		return ClientConnection.CLIENT_IO_GROUP;
+	}
+
 	@Override
 	public void onInitialize() {
 		System.out.println("Initializing Block & Bass Core!");
