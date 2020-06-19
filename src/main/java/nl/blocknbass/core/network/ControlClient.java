@@ -10,7 +10,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -29,7 +33,10 @@ public class ControlClient {
 		b.handler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			protected void initChannel(SocketChannel ch) throws Exception {
+				ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
 				ch.pipeline().addLast(new ProtobufDecoder(MessageProto.Message.getDefaultInstance()));
+				ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+				ch.pipeline().addLast(new ProtobufEncoder());
 				ch.pipeline().addLast(new ControlClientHandler(client));
 			}
 		});
