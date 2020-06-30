@@ -66,7 +66,8 @@ public class ControlClient {
 	
 	public void shutdownChannels() {
 		try {
-			channel.close().sync();
+			if (channel != null && channel.isOpen())
+				channel.close().sync();
 		} catch (InterruptedException e) {
 			System.err.println("Channel shutdown failed!");
 		}
