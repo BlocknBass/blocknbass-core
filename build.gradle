@@ -15,6 +15,10 @@ plugins {
   	id "idea"
 }
 
+repositories {
+	mavenCentral()
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -22,13 +26,18 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+configurations {
+	provided
+	compile.extendsFrom(provided)
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	compile "com.google.code.findbugs:jsr305:3.0.2"
-	compile 'com.google.protobuf:protobuf-java:3.7.0'
+	provided 'com.google.protobuf:protobuf-java:3.7.0'
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -85,6 +94,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar {
 	from "LICENSE"
+
+
+	configurations.provided.each { dep ->
+		from(project.zipTree(dep)) {
+			exclude 'META-INF', 'META-INF/**'
+		}
+	}
 }
 
 // configure the maven publication

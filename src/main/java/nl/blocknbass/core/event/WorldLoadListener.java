@@ -17,7 +17,7 @@ public class WorldLoadListener {
 
 	public void onLoadWorldPost(ClientWorld worldClientIn, MinecraftClient minecraftClient) {
 		try {
-			BlocknBassCore.INSTANCE.controlClient.run("localhost", 6969, minecraftClient);
+			BlocknBassCore.INSTANCE.controlClient.run("control.blocknbass.nl", 6969, minecraftClient);
 		} catch (Exception e) {
 			System.err.println("Failed to connect to server " + "localhost");
 			e.printStackTrace();
