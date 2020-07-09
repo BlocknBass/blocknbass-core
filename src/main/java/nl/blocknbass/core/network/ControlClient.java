@@ -24,6 +24,8 @@ public class ControlClient {
 	private Channel channel;
 	
 	public void run(String server, int port, MinecraftClient client) throws Exception {
+		if (channel != null && channel.isOpen())
+			return;
 		Bootstrap b = new Bootstrap();
 		b.group((EventLoopGroup)BlocknBassCore.getNettyLoop().get());
 		b.channel(BlocknBassCore.getNettyLoopClass());
@@ -70,6 +72,20 @@ public class ControlClient {
 				channel.close().sync();
 		} catch (InterruptedException e) {
 			System.err.println("Channel shutdown failed!");
+		}
+	}
+
+	public void reconnect(MinecraftClient client) {
+		shutdownChannels();
+		try {
+			run("control.blocknbass.nl", 6969, client);
+		} catch (Exception e) {
+			client.execute(() -> {
+				client.player.addChatMessage(
+						new LiteralText("Failed to reconnect to Block & Bass control server")
+								.formatted(Formatting.RED), false
+				);
+			});
 		}
 	}
 }

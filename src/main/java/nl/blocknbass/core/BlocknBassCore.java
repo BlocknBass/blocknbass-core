@@ -6,11 +6,18 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import nl.blocknbass.core.network.ControlClient;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class BlocknBassCore implements ModInitializer {
 	public static final String ENTRYPOINT_TYPE = "blocknbass-mod";
@@ -45,5 +52,9 @@ public class BlocknBassCore implements ModInitializer {
 		controlClient = new ControlClient();
 		dispatch = new BlocknBassPacketDispatcher();
 		PLUGINS.get().forEach(provider -> provider.registerPacketSet(dispatch));
+		ClientSidePacketRegistry.INSTANCE.register(new Identifier("blocknbass", "main"),
+				((packetContext, packetByteBuf) -> {
+					controlClient.reconnect(MinecraftClient.getInstance());
+				}));
 	}
 }
