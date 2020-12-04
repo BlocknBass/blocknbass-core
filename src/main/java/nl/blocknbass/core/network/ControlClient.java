@@ -54,7 +54,7 @@ public class ControlClient {
 			}
 
 			client.execute(() -> {
-				MinecraftClient.getInstance().player.addChatMessage(text, false);
+				MinecraftClient.getInstance().player.sendMessage(text, false);
 			});
 		});
 		
@@ -81,7 +81,7 @@ public class ControlClient {
 			run("control.blocknbass.nl", 6969, client);
 		} catch (Exception e) {
 			client.execute(() -> {
-				client.player.addChatMessage(
+				client.player.sendMessage(
 						new LiteralText("Failed to reconnect to Block & Bass control server")
 								.formatted(Formatting.RED), false
 				);
